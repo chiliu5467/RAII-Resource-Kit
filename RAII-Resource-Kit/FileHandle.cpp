@@ -1,49 +1,29 @@
 ﻿#include <iostream>
-#include <cstdio> // Include necessary header for file operations
+#include "FileHandle.h"
 
-class FileHandle
+FileHandle::FileHandle(const char* fileName)
 {
-public:
-    FileHandle(const char* fileName)
-    {
-        errno_t err = fopen_s(&file_, fileName, "r"); // Use fopen_s correctly
-        if (err != 0 || file_ == nullptr) // Check for errors
-        {
-            std::cout << "Failed to open file: " << fileName << std::endl;
-            file_ = nullptr; // Ensure file_ is null if opening fails
-            return;
-        }
+    errno_t err = fopen_s(&file_, fileName, "r");
 
-        std::cout << "Successfully opened file: " << fileName << std::endl;
+    if (err != 0 || file_ == nullptr)
+    {
+        std::cout << "Failed to open file: "
+            << fileName << '\n';
+
+        file_ = nullptr;
+        return;
     }
 
-    ~FileHandle()
-    {
-        if (file_ != nullptr)
-        {
-            std::fclose(file_);
-            std::cout << "Successfully closed file" << std::endl;
-        }
-        else
-        {
-            std::cout << "No file need to be closed" << std::endl;
-        }
-    }
-
-    FileHandle(const FileHandle&) = delete; // Disable copy constructor
-    FileHandle& operator=(const FileHandle&) = delete; // Disable copy assignment
-
-private:
-    FILE* file_ = nullptr; // File pointer
-};
-
-void Test()
-{
-    FileHandle file("test.txt");
+    std::cout << "Successfully opened file: "
+        << fileName << '\n';
 }
 
-int main()
+FileHandle::~FileHandle()
 {
-    Test();
-    return 0;
+    if (file_ != nullptr)
+    {
+        std::fclose(file_);
+
+        std::cout << "Successfully closed file\n";
+    }
 }
