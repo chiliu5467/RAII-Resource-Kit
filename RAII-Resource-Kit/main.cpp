@@ -1,6 +1,6 @@
 #include "FileHandle.h"
 #include <iostream>
-
+#include <stdexcept>
 
 void TestNormalReturn()
 {
@@ -23,14 +23,14 @@ void TestException()
     try
     {
         FileHandle file("test.txt");
-		file.writeData("Hello");
+        std::cout << "Before exception\n";
+        throw std::runtime_error("Test exception");
     }
-    catch (...)
+    catch (const std::exception& e)
     {
-        std::cout << "\n[catch 區塊] 捕捉到未知的例外！\n";
+        std::cout << "Caught exception: "
+            << e.what() << '\n';
     }
-
-    std::cout << "--- 程式正常繼續往下執行 ---\n";
 }
 
 int main()

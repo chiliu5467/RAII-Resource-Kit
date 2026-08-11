@@ -28,17 +28,3 @@ FileHandle::~FileHandle()
         std::cout << "Successfully closed file\n";
     }
 }
-
-void FileHandle::writeData(const std::string& data)
-{
-    // 假設遇到了某種錯誤情境
-    bool isDiskFull = true;
-
-    if (isDiskFull)
-    {
-        std::cout << "throw exception\n";
-        throw std::runtime_error("exception error!");
-    }
-
-    std::cout << "Writing data success" << data << '\n';
-}
