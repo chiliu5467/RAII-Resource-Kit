@@ -1,6 +1,11 @@
 #include "FileHandle.h"
+
 #include <iostream>
 #include <stdexcept>
+#include <type_traits>
+
+static_assert(!std::is_copy_constructible_v<FileHandle>, "FileHandle should not be copy constructible");
+static_assert(!std::is_copy_assignable_v<FileHandle>, "FileHandle should not be copy assignable");
 
 void TestNormalReturn()
 {
