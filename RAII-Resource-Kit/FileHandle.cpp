@@ -28,3 +28,50 @@ FileHandle::~FileHandle()
         std::cout << "Successfully closed file\n";
     }
 }
+
+FileHandle::FileHandle(FileHandle&& source)noexcept
+    : file_{ source.file_ }
+{
+    // 1. 紀錄轉移前的資源指標
+    void* old_resource = source.file_;
+
+    // 2. 轉移所有權（歸零 source）
+    source.file_ = nullptr;
+
+    // 3. 印出完整轉移歷程
+    std::cout << "[Move Constructor] Object (" << this << ")"
+        << " stole file handle [" << old_resource << "]"
+        << " from Source (" << &source << ")."
+        << " Source is now nullptr.\n";
+}
+
+FileHandle& FileHandle::operator=(FileHandle&& source)noexcept  
+{  
+    if (this == &source)
+    {
+        std::cout << "[Move Assignment] Self-assignment detected for Object (" << this << "), skipped.\n";
+        return *this;
+    }
+
+    void* old_resource_of_this = file_;
+    void* transferred_resource = source.file_;
+
+    // 1. 釋放舊資源 log
+    if (file_) {
+        std::cout << "[Move Assignment] Object (" << this << ")"
+            << " releasing old file handle [" << old_resource_of_this << "].\n";
+    }
+    delete file_;
+
+    // 2. 轉移所有權
+    file_ = source.file_;
+    source.file_ = nullptr;
+
+    // 3. 轉移完成 log
+    std::cout << "[Move Assignment] Object (" << this << ")"
+        << " stole file handle [" << transferred_resource << "]"
+        << " from Source (" << &source << ")."
+        << " Source is now nullptr.\n";
+
+    return *this;
+}

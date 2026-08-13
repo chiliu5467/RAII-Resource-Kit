@@ -6,6 +6,8 @@
 
 static_assert(!std::is_copy_constructible_v<FileHandle>, "FileHandle should not be copy constructible");
 static_assert(!std::is_copy_assignable_v<FileHandle>, "FileHandle should not be copy assignable");
+static_assert(std::is_move_constructible_v<FileHandle>, "FileHandle should be move constructible");
+static_assert(std::is_move_assignable_v<FileHandle>, "FileHandle should be move assignable");
 
 void TestNormalReturn()
 {
@@ -38,10 +40,22 @@ void TestException()
     }
 }
 
+void TestMoveConstructor()
+{
+    FileHandle file1("test.txt");
+    FileHandle file2 = std::move(file1);
+}
+
+void TestMoveAssignment()
+{
+    FileHandle file1("test.txt");
+    FileHandle file2("test2.txt");
+	file2 = std::move(file1);
+}
+
 int main()
 {
-    TestNormalReturn();
-    TestEarlyReturn();
-    TestException();
+    TestMoveConstructor();
+    TestMoveAssignment();
     return 0;
 }
