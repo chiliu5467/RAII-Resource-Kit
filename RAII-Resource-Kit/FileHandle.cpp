@@ -1,6 +1,8 @@
-﻿#include <iostream>
-#include "FileHandle.h"
+﻿#include "FileHandle.h"
+
+#include <iostream>
 #include <string>
+#include <utility>
 
 FileHandle::FileHandle(const char* fileName)
 {
@@ -53,25 +55,25 @@ FileHandle& FileHandle::operator=(FileHandle&& source)noexcept
         return *this;
     }
 
-    void* old_resource_of_this = file_;
-    void* transferred_resource = source.file_;
+    if (file_ != nullptr)
+    {
+        std::cout
+            << "[Move Assignment] Object (" << this
+            << ") releasing old file handle ["
+            << file_ << "].\n";
 
-    // 1. 釋放舊資源 log
-    if (file_) {
-        std::cout << "[Move Assignment] Object (" << this << ")"
-            << " releasing old file handle [" << old_resource_of_this << "].\n";
+		std::fclose(file_); // Cannot use delete here because file_ is a FILE* pointer, not a dynamically allocated memory pointer.
     }
-    delete file_;
 
-    // 2. 轉移所有權
+    // 轉移所有權
     file_ = source.file_;
     source.file_ = nullptr;
 
-    // 3. 轉移完成 log
-    std::cout << "[Move Assignment] Object (" << this << ")"
-        << " stole file handle [" << transferred_resource << "]"
-        << " from Source (" << &source << ")."
-        << " Source is now nullptr.\n";
+    std::cout
+        << "[Move Assignment] Object (" << this
+        << ") stole file handle [" << file_
+        << "] from Source (" << &source
+        << "). Source is now nullptr.\n";
 
     return *this;
 }

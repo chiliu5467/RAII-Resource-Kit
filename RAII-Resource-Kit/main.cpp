@@ -49,8 +49,9 @@ void TestMoveConstructor()
 void TestMoveAssignment()
 {
     FileHandle file1("test.txt");
-    FileHandle file2("test2.txt");
-	file2 = std::move(file1);
+    FileHandle file2("test.txt");
+
+    file2 = std::move(file1);
 }
 
 int main()
