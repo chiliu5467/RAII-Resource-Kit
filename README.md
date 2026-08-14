@@ -1,36 +1,60 @@
 # RAII Resource Kit
 
-A minimal C++ learning project exploring **RAII (Resource Acquisition Is Initialization)**, resource ownership transfer (move semantics), and object lifetime management.
+A small C++ project demonstrating RAII, resource ownership, and move semantics through a custom `FileHandle` wrapper around `FILE*`.
 
-## Concepts Covered
+## Concepts
 
-- RAII & Object Lifetime Management
-- Constructor / Destructor pair for resource safety
-- Resource Ownership & Single Ownership semantics
-- Non-copyable resource handles (`delete` copy operations)
-- Move semantics implementation (`std::move`, move ctor/assignment)
-- Rule of Five / Rule of Zero
+- RAII
+- Object lifetime
+- Resource ownership
+- Copy restrictions
+- Move constructor
+- Move assignment
+- Exception-safe cleanup
+- Rule of Five
 
-## Key Components
+## FileHandle
 
-### `FileHandle`
-A custom RAII wrapper around C-style `FILE*`.
+`FileHandle` owns a `FILE*` and automatically closes it in its destructor.
 
-* **Resource Allocation:** Opens the file upon object construction.
-* **Automatic Cleanup:** Guarantees file closure when the object goes out of scope.
-* **Copy Prevention:** Copy constructor and copy assignment are disabled to prevent duplicate ownership of the underlying `FILE*`.
-* **Move Ownership:** Move operations allow explicit transfer of resource ownership.
+Copying is disabled to prevent multiple objects from owning the same file handle:
+
+```cpp
+FileHandle(const FileHandle&) = delete;
+FileHandle& operator=(const FileHandle&) = delete;
+```
+
+Moving is supported so ownership can be transferred safely:
+
+```cpp
+FileHandle(FileHandle&& other) noexcept;
+FileHandle& operator=(FileHandle&& other) noexcept;
+```
 
 ## What I Tested
 
-- [x] **Scope Safety:** Normal scope exit and early returns
-- [x] **Exception Safety:** Automatic cleanup during stack unwinding
-- [x] **Move Semantics:** Move constructor and move assignment
-- [x] **Edge Cases:** Self-move assignment handling (`file = std::move(file)`)
-- [x] **Moved-from State:** Ensuring object is in a valid but empty state post-move
-- [x] **Compile-time Checks:** Verifying copy prevention at compile time
+- Normal scope exit
+- Early return
+- Exception stack unwinding
+- Copy restrictions
+- Move construction
+- Move assignment
+- Self-move assignment
+- Compile-time checks with `static_assert`
+
+## Build
+
+Requirements:
+
+- Visual Studio 2022
+- C++17 or later
+
+Open `RAII-Resource-Kit.sln`, build the solution, and run the executable.
 
 ## Key Takeaways
-- How RAII simplifies resource cleanup and guarantees exception safety.
-- Designing predictable, leak-free C++ classes using the **Rule of Five**.
-- Managing explicit resource handoffs via move semantics without accidental double-free errors.
+
+- RAII ties resource lifetime to object lifetime.
+- `FILE*` acquired with `fopen` / `fopen_s` must be released with `fclose`.
+- Exclusive resources should not be shallow-copied.
+- Move semantics allow safe ownership transfer.
+- A program not crashing does not necessarily mean the code is correct.
