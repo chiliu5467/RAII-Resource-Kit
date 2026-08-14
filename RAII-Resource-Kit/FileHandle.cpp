@@ -1,8 +1,6 @@
 ﻿#include "FileHandle.h"
 
 #include <iostream>
-#include <string>
-#include <utility>
 
 FileHandle::FileHandle(const char* fileName)
 {

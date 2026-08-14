@@ -1,8 +1,7 @@
 #include "FileHandle.h"
 
 #include <iostream>
-#include <stdexcept>
-#include <type_traits>
+#include <utility>
 
 static_assert(!std::is_copy_constructible_v<FileHandle>, "FileHandle should not be copy constructible");
 static_assert(!std::is_copy_assignable_v<FileHandle>, "FileHandle should not be copy assignable");
@@ -54,9 +53,19 @@ void TestMoveAssignment()
     file2 = std::move(file1);
 }
 
+void TestMoveSelfAssignment()
+{
+    FileHandle file("test.txt");
+    file = std::move(file);
+}
+
 int main()
 {
+    TestNormalReturn();
+	TestEarlyReturn();
+    TestException();
     TestMoveConstructor();
     TestMoveAssignment();
+    TestMoveSelfAssignment();
     return 0;
 }
